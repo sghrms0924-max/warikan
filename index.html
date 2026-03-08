@@ -173,13 +173,26 @@ body{
 /* ── EXPENSES ── */
 .exp-list{padding:0.5rem 0.8rem;}
 .exp-item{
-  display:grid;
-  grid-template-columns:1fr auto auto auto;
-  align-items:center;gap:0.5rem;
-  padding:0.55rem 0;
+  display:flex;
+  flex-direction:column;
+  gap:0.35rem;
+  padding:0.65rem 0;
   border-bottom:1px solid var(--border);
 }
 .exp-item:last-child{border-bottom:none;}
+
+.exp-row-top{
+  display:grid;
+  grid-template-columns:1fr auto auto auto;
+  align-items:center;gap:0.5rem;
+}
+
+.exp-row-bottom{
+  display:flex;
+  align-items:center;
+  gap:0.4rem;
+  padding-left:0.1rem;
+}
 
 .exp-name{
   background:none;border:none;outline:none;
@@ -223,6 +236,27 @@ body{
 }
 .del-btn:hover{color:#c0392b;}
 
+/* payment source toggle */
+.pay-src-tog{
+  display:flex;border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;
+}
+.pay-src-tog button{
+  border:none;background:none;
+  font-size:0.6rem;padding:0.22rem 0.45rem;
+  cursor:pointer;color:var(--muted);
+  transition:all 0.15s;white-space:nowrap;
+}
+.pay-src-tog button.common-active{background:var(--muted);color:#fff;}
+.pay-src-tog button.his-active{background:var(--his);color:#fff;}
+.pay-src-tog button.her-active{background:var(--her);color:#fff;}
+
+.pay-src-label{
+  font-size:0.6rem;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
 .add-exp-btn{
   width:100%;background:none;
   border:1.5px dashed var(--border);
@@ -234,6 +268,28 @@ body{
 }
 .add-exp-btn:hover{border-color:var(--accent);color:var(--accent);}
 
+/* ── OPTIONS ROW ── */
+.options-row{
+  padding:0.6rem 1.1rem;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.options-label{
+  font-size:0.72rem;
+  color:var(--muted);
+}
+.round-tog{
+  display:flex;border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;
+}
+.round-tog button{
+  border:none;background:none;
+  font-size:0.65rem;padding:0.3rem 0.6rem;
+  cursor:pointer;color:var(--muted);
+  transition:all 0.15s;white-space:nowrap;
+}
+.round-tog button.active{background:var(--accent);color:#fff;}
+
 /* result summary */
 .result-grid{display:grid;grid-template-columns:1fr 1fr;}
 .result-person{padding:1rem 1.1rem;}
@@ -243,6 +299,12 @@ body{
 .her .res-name{color:var(--her);}
 .res-amt{font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--ink);margin-bottom:0.1rem;}
 .res-sub{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);}
+.res-advance{
+  font-family:'DM Mono',monospace;
+  font-size:0.68rem;
+  color:var(--accent);
+  margin-top:0.15rem;
+}
 
 .total-row{
   padding:0.8rem 1.1rem;
@@ -251,6 +313,16 @@ body{
 }
 .total-label{font-size:0.8rem;color:var(--muted);}
 .total-val{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;}
+
+/* settlement row */
+.settle-row{
+  padding:0.8rem 1.1rem;
+  border-top:1.5px solid var(--accent);
+  background:rgba(201,124,42,0.06);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.settle-label{font-size:0.78rem;color:var(--accent);font-weight:500;}
+.settle-val{font-family:'DM Mono',monospace;font-size:0.95rem;font-weight:500;color:var(--accent);}
 
 /* save btn */
 .save-btn{
@@ -313,6 +385,11 @@ body{
   border-bottom:1px solid var(--border);
 }
 .month-detail-row:last-child{border:none;}
+.month-settle{
+  font-size:0.78rem;padding:0.4rem 0 0.2rem;
+  color:var(--accent);font-weight:500;
+  text-align:center;
+}
 .month-del{
   background:none;border:none;color:var(--muted);
   font-size:0.7rem;cursor:pointer;
@@ -337,7 +414,7 @@ canvas{max-height:240px;}
 
 @media(max-width:420px){
   .income-grid{grid-template-columns:1fr;}
-  .exp-item{grid-template-columns:1fr auto auto;}
+  .exp-row-top{grid-template-columns:1fr auto auto;}
   .del-btn{display:none;}
 }
 </style>
@@ -413,6 +490,13 @@ canvas{max-height:240px;}
     <div style="padding:0 0.8rem 0.8rem">
       <button class="add-exp-btn" onclick="addExp()">＋ 費目を追加</button>
     </div>
+    <div class="options-row">
+      <span class="options-label">端数処理</span>
+      <div class="round-tog">
+        <button id="roundOff" onclick="setRounding('off')">そのまま</button>
+        <button id="roundOn" class="active" onclick="setRounding('on')">100円単位</button>
+      </div>
+    </div>
   </div>
 
   <!-- Result -->
@@ -423,16 +507,22 @@ canvas{max-height:240px;}
         <div class="res-name" id="resHisName">自分</div>
         <div class="res-amt" id="resHisAmt">0万</div>
         <div class="res-sub" id="resHisSub">—</div>
+        <div class="res-advance" id="resHisAdv"></div>
       </div>
       <div class="result-person her">
         <div class="res-name" id="resHerName">妻</div>
         <div class="res-amt" id="resHerAmt">0万</div>
         <div class="res-sub" id="resHerSub">—</div>
+        <div class="res-advance" id="resHerAdv"></div>
       </div>
     </div>
     <div class="total-row">
       <span class="total-label">合計生活費</span>
       <span class="total-val" id="resTotalAmt">0 万円/月</span>
+    </div>
+    <div class="settle-row" id="settleRow" style="display:none;">
+      <span class="settle-label" id="settleLabel">精算不要</span>
+      <span class="settle-val" id="settleVal"></span>
     </div>
   </div>
 
@@ -473,12 +563,13 @@ canvas{max-height:240px;}
 <script>
 // ─── STATE ───────────────────────────────────────────────
 let periods = { his:'year', her:'year' };
+let rounding = 'on'; // 'on' = 100円単位丸め, 'off' = そのまま
 const DEFAULT_EXPS = [
-  {name:'家賃・住居費', amount:0, split:'ratio'},
-  {name:'食費・日用品', amount:0, split:'ratio'},
-  {name:'水道光熱費',   amount:0, split:'ratio'},
-  {name:'通信費',       amount:0, split:'half'},
-  {name:'交際費・外食', amount:0, split:'ratio'},
+  {name:'家賃・住居費', amount:0, split:'ratio', paidBy:'common'},
+  {name:'食費・日用品', amount:0, split:'ratio', paidBy:'common'},
+  {name:'水道光熱費',   amount:0, split:'ratio', paidBy:'common'},
+  {name:'通信費',       amount:0, split:'half',  paidBy:'common'},
+  {name:'交際費・外食', amount:0, split:'ratio', paidBy:'common'},
 ];
 let exps = [];
 let records = [];
@@ -490,6 +581,7 @@ function save() {
     hisName: v('hisName'), herName: v('herName'),
     hisIncome: v('hisIncome'), herIncome: v('herIncome'),
     hisPeriod: periods.his, herPeriod: periods.her,
+    rounding,
     exps
   }));
   localStorage.setItem('warikin_records', JSON.stringify(records));
@@ -505,11 +597,16 @@ function load() {
     document.getElementById('herIncome').value = s.herIncome || '';
     periods.his = s.hisPeriod || 'year';
     periods.her = s.herPeriod || 'year';
+    rounding = s.rounding || 'on';
     ['his','her'].forEach(p => {
       document.getElementById(p+'Year').classList.toggle('active', periods[p]==='year');
       document.getElementById(p+'Month').classList.toggle('active', periods[p]==='month');
     });
+    document.getElementById('roundOn').classList.toggle('active', rounding==='on');
+    document.getElementById('roundOff').classList.toggle('active', rounding==='off');
     exps = s.exps || JSON.parse(JSON.stringify(DEFAULT_EXPS));
+    // migrate old data without paidBy
+    exps.forEach(e => { if(!e.paidBy) e.paidBy = 'common'; });
   } else {
     exps = JSON.parse(JSON.stringify(DEFAULT_EXPS));
   }
@@ -527,6 +624,22 @@ function getRatios(){
   const hm = getMonthly('his'), herm = getMonthly('her');
   const total = hm + herm;
   return total > 0 ? { hisR: hm/total, herR: herm/total, total } : { hisR:0.5, herR:0.5, total:0 };
+}
+
+function applyRounding(val){
+  // 万円 → 100円単位に丸める = 小数点以下3桁目で丸め (0.01万 = 100円)
+  if(rounding === 'on'){
+    return Math.round(val * 100) / 100;
+  }
+  return val;
+}
+
+// ─── ROUNDING TOGGLE ──────────────────────────────────────
+function setRounding(mode){
+  rounding = mode;
+  document.getElementById('roundOn').classList.toggle('active', mode==='on');
+  document.getElementById('roundOff').classList.toggle('active', mode==='off');
+  calc(); save();
 }
 
 // ─── PERIOD TOGGLE ────────────────────────────────────────
@@ -551,12 +664,40 @@ function calc(){
   renderExps(hisR, herR);
 
   let hisTot=0, herTot=0, grand=0;
+  let hisAdvanced=0, herAdvanced=0; // 立替額
+
   exps.forEach(e => {
     const a = parseFloat(e.amount)||0;
     grand += a;
-    if(e.split==='half'){ hisTot+=a/2; herTot+=a/2; }
-    else { hisTot+=a*hisR; herTot+=a*herR; }
+
+    // 負担額の計算
+    let hisBurden, herBurden;
+    if(e.split==='half'){
+      hisBurden = a/2;
+      herBurden = a/2;
+    } else {
+      hisBurden = a*hisR;
+      herBurden = a*herR;
+    }
+
+    hisTot += hisBurden;
+    herTot += herBurden;
+
+    // 立替の追跡
+    if(e.paidBy === 'his'){
+      // 自分が全額立替 → 相手の負担分を自分が立て替えた
+      hisAdvanced += herBurden;
+    } else if(e.paidBy === 'her'){
+      // 相手が全額立替 → 自分の負担分を相手が立て替えた
+      herAdvanced += hisBurden;
+    }
   });
+
+  // 端数処理
+  hisTot = applyRounding(hisTot);
+  herTot = applyRounding(herTot);
+  hisAdvanced = applyRounding(hisAdvanced);
+  herAdvanced = applyRounding(herAdvanced);
 
   const n = getNames();
   document.getElementById('resHisName').textContent = n.his;
@@ -566,6 +707,25 @@ function calc(){
   document.getElementById('resHisSub').textContent = grand>0 ? `実質 ${(hisTot/grand*100).toFixed(1)}%` : '—';
   document.getElementById('resHerSub').textContent = grand>0 ? `実質 ${(herTot/grand*100).toFixed(1)}%` : '—';
   document.getElementById('resTotalAmt').textContent = grand.toFixed(2)+' 万円/月';
+
+  // 立替表示
+  document.getElementById('resHisAdv').textContent = hisAdvanced > 0 ? `立替: ${hisAdvanced.toFixed(2)}万` : '';
+  document.getElementById('resHerAdv').textContent = herAdvanced > 0 ? `立替: ${herAdvanced.toFixed(2)}万` : '';
+
+  // 精算表示
+  const settleRow = document.getElementById('settleRow');
+  const netSettle = hisAdvanced - herAdvanced; // 正なら相手→自分へ支払い
+  if(netSettle > 0.001){
+    settleRow.style.display = 'flex';
+    document.getElementById('settleLabel').textContent = `${n.her} → ${n.his}`;
+    document.getElementById('settleVal').textContent = `${applyRounding(Math.abs(netSettle)).toFixed(2)} 万円`;
+  } else if(netSettle < -0.001){
+    settleRow.style.display = 'flex';
+    document.getElementById('settleLabel').textContent = `${n.his} → ${n.her}`;
+    document.getElementById('settleVal').textContent = `${applyRounding(Math.abs(netSettle)).toFixed(2)} 万円`;
+  } else {
+    settleRow.style.display = 'none';
+  }
 }
 
 // ─── RENDER EXPS ─────────────────────────────────────────
@@ -575,31 +735,41 @@ function renderExps(hisR, herR){
   list.innerHTML = '';
   exps.forEach((e,i) => {
     const a = parseFloat(e.amount)||0;
-    const hisS = e.split==='half' ? a/2 : a*hisR;
-    const herS = e.split==='half' ? a/2 : a*herR;
+    const paidBy = e.paidBy || 'common';
     const row = document.createElement('div');
     row.className = 'exp-item';
     row.innerHTML = `
-      <input class="exp-name" type="text" value="${e.name}" placeholder="費目名"
-        oninput="exps[${i}].name=this.value;save()">
-      <div class="exp-amt-w">
-        <input type="number" min="0" step="0.1" value="${e.amount||''}" placeholder="0"
-          oninput="exps[${i}].amount=parseFloat(this.value)||0;calc();save()">
-        <span>万/月</span>
+      <div class="exp-row-top">
+        <input class="exp-name" type="text" value="${e.name}" placeholder="費目名"
+          oninput="exps[${i}].name=this.value;save()">
+        <div class="exp-amt-w">
+          <input type="number" min="0" step="0.1" value="${e.amount||''}" placeholder="0"
+            oninput="exps[${i}].amount=parseFloat(this.value)||0;calc();save()">
+          <span>万/月</span>
+        </div>
+        <div class="split-tog">
+          <button class="${e.split==='ratio'?'r':''}" onclick="setSplit(${i},'ratio')">比</button>
+          <button class="${e.split==='half'?'h':''}" onclick="setSplit(${i},'half')">半</button>
+        </div>
+        <button class="del-btn" onclick="delExp(${i})">✕</button>
       </div>
-      <div class="split-tog">
-        <button class="${e.split==='ratio'?'r':''}" onclick="setSplit(${i},'ratio')">比</button>
-        <button class="${e.split==='half'?'h':''}" onclick="setSplit(${i},'half')">半</button>
+      <div class="exp-row-bottom">
+        <span class="pay-src-label">支払元:</span>
+        <div class="pay-src-tog">
+          <button class="${paidBy==='common'?'common-active':''}" onclick="setPaidBy(${i},'common')">共通</button>
+          <button class="${paidBy==='his'?'his-active':''}" onclick="setPaidBy(${i},'his')">${n.his}</button>
+          <button class="${paidBy==='her'?'her-active':''}" onclick="setPaidBy(${i},'her')">${n.her}</button>
+        </div>
       </div>
-      <button class="del-btn" onclick="delExp(${i})">✕</button>
     `;
     list.appendChild(row);
   });
 }
 
 function setSplit(i, mode){ exps[i].split=mode; calc(); save(); }
+function setPaidBy(i, who){ exps[i].paidBy=who; calc(); save(); }
 function addExp(){
-  exps.push({name:'新しい費目',amount:0,split:'ratio'});
+  exps.push({name:'新しい費目',amount:0,split:'ratio',paidBy:'common'});
   calc(); save();
   setTimeout(()=>{
     const inputs=document.querySelectorAll('.exp-name');
@@ -612,17 +782,30 @@ function delExp(i){ exps.splice(i,1); calc(); save(); }
 function saveRecord(){
   const {hisR, herR} = getRatios();
   let hisTot=0, herTot=0, grand=0;
+  let hisAdvanced=0, herAdvanced=0;
+
   exps.forEach(e=>{
     const a=parseFloat(e.amount)||0;
     grand+=a;
-    if(e.split==='half'){hisTot+=a/2;herTot+=a/2;}
-    else{hisTot+=a*hisR;herTot+=a*herR;}
+    let hisBurden, herBurden;
+    if(e.split==='half'){hisBurden=a/2;herBurden=a/2;}
+    else{hisBurden=a*hisR;herBurden=a*herR;}
+    hisTot+=hisBurden;
+    herTot+=herBurden;
+    if(e.paidBy==='his') hisAdvanced+=herBurden;
+    if(e.paidBy==='her') herAdvanced+=hisBurden;
   });
   if(grand===0){ toast('費目の金額を入力してください'); return; }
+
+  hisTot = applyRounding(hisTot);
+  herTot = applyRounding(herTot);
+  hisAdvanced = applyRounding(hisAdvanced);
+  herAdvanced = applyRounding(herAdvanced);
 
   const now = new Date();
   const label = `${now.getFullYear()}年${now.getMonth()+1}月`;
   const n = getNames();
+  const netSettle = hisAdvanced - herAdvanced;
   const rec = {
     label, date: now.toISOString(),
     hisName: n.his, herName: n.her,
@@ -630,6 +813,10 @@ function saveRecord(){
     herAmt: parseFloat(herTot.toFixed(2)),
     total: parseFloat(grand.toFixed(2)),
     hisR: parseFloat(hisR.toFixed(4)),
+    hisAdvanced: parseFloat(hisAdvanced.toFixed(2)),
+    herAdvanced: parseFloat(herAdvanced.toFixed(2)),
+    netSettle: parseFloat(applyRounding(Math.abs(netSettle)).toFixed(2)),
+    settleDir: netSettle > 0.001 ? 'her2his' : (netSettle < -0.001 ? 'his2her' : 'none'),
     exps: exps.map(e=>({...e}))
   };
   records.unshift(rec);
@@ -658,6 +845,14 @@ function renderHistory(){
     const mc = document.createElement('div');
     mc.className = 'month-card';
     const hisPct = Math.round(r.hisR*100);
+
+    let settleHtml = '';
+    if(r.settleDir === 'her2his'){
+      settleHtml = `<div class="month-settle">精算: ${r.herName} → ${r.hisName} ${r.netSettle}万円</div>`;
+    } else if(r.settleDir === 'his2her'){
+      settleHtml = `<div class="month-settle">精算: ${r.hisName} → ${r.herName} ${r.netSettle}万円</div>`;
+    }
+
     mc.innerHTML = `
       <div class="month-head" onclick="toggleDetail(this)">
         <span class="month-label">${r.label}</span>
@@ -670,11 +865,15 @@ function renderHistory(){
       <div class="month-detail">
         <div class="month-detail-row"><span>${r.hisName}の負担</span><span style="color:var(--his);font-family:'DM Mono',monospace">${r.hisAmt}万円</span></div>
         <div class="month-detail-row"><span>${r.herName}の負担</span><span style="color:var(--her);font-family:'DM Mono',monospace">${r.herAmt}万円</span></div>
-        ${r.exps.map(e=>`
+        ${r.exps.map(e=>{
+          const paidLabel = e.paidBy==='his' ? ` [${r.hisName}立替]` : (e.paidBy==='her' ? ` [${r.herName}立替]` : '');
+          return `
           <div class="month-detail-row">
-            <span>${e.name}</span>
+            <span>${e.name}${paidLabel}</span>
             <span style="font-family:'DM Mono',monospace;color:var(--muted)">${e.amount||0}万 (${e.split==='half'?'折半':'年収比'})</span>
-          </div>`).join('')}
+          </div>`;
+        }).join('')}
+        ${settleHtml}
       </div>
     `;
     el.appendChild(mc);
@@ -696,7 +895,6 @@ function delRecord(i){
 
 // ─── CHARTS ──────────────────────────────────────────────
 function renderCharts(){
-  // destroy old
   Object.values(charts).forEach(c=>c.destroy());
   charts = {};
 
@@ -714,7 +912,6 @@ function renderCharts(){
   const hisAmts = rev.map(r=>r.hisAmt);
   const herAmts = rev.map(r=>r.herAmt);
 
-  // Chart 1: total line
   charts.total = new Chart(document.getElementById('chartTotal').getContext('2d'),{
     type:'bar',
     data:{
@@ -735,7 +932,6 @@ function renderCharts(){
     }
   });
 
-  // Chart 2: stacked bar ratio
   const hisName = records[0]?.hisName||'自分';
   const herName = records[0]?.herName||'パートナー';
   charts.ratio = new Chart(document.getElementById('chartRatio').getContext('2d'),{
@@ -757,7 +953,6 @@ function renderCharts(){
     }
   });
 
-  // Chart 3: doughnut of latest exps
   const latest = records[0];
   const dLabels = latest.exps.filter(e=>parseFloat(e.amount)>0).map(e=>e.name);
   const dData = latest.exps.filter(e=>parseFloat(e.amount)>0).map(e=>parseFloat(e.amount));
