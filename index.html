@@ -468,7 +468,7 @@ canvas{max-height:240px;}
     <div class="income-grid">
       <div class="person-block his">
         <div class="person-label">👨 あなた</div>
-        <input class="name-input" id="hisName" type="text" value="自分" placeholder="名前" oninput="calc()">
+        <input class="name-input" id="hisName" type="text" value="自分" placeholder="名前" onchange="fullRefresh()">
         <div class="amt-row">
           <input type="number" id="hisIncome" placeholder="0" min="0" oninput="calc()">
           <span class="unit">万円</span>
@@ -480,7 +480,7 @@ canvas{max-height:240px;}
       </div>
       <div class="person-block her">
         <div class="person-label">👩 パートナー</div>
-        <input class="name-input" id="herName" type="text" value="妻" placeholder="名前" oninput="calc()">
+        <input class="name-input" id="herName" type="text" value="妻" placeholder="名前" onchange="fullRefresh()">
         <div class="amt-row">
           <input type="number" id="herIncome" placeholder="0" min="0" oninput="calc()">
           <span class="unit">万円</span>
@@ -685,7 +685,8 @@ function renderAids(){
         oninput="aids[${i}].name=this.value;save()">
       <div class="aid-amt-w">
         <input type="number" min="0" step="1" value="${a.amount||''}" placeholder="0"
-          oninput="aids[${i}].amount=parseInt(this.value)||0;calc();save()">
+          oninput="aids[${i}].amount=parseInt(this.value)||0;save()"
+            onchange="calc()">
         <span>円</span>
       </div>
       <button class="aid-del" onclick="delAid(${i})">✕</button>
@@ -710,7 +711,14 @@ function delAid(i){
   renderAids(); calc(); save();
 }
 
-// ─── CALC ─────────────────────────────────────────────────
+// ─── FULL REFRESH (render + calc) ─────────────────────────
+function fullRefresh(){
+  renderExps();
+  renderAids();
+  calc();
+}
+
+// ─── CALC (results only, no DOM rebuild) ──────────────────
 function calc(){
   const {hisR, herR, total} = getRatios();
   const hisPct = Math.round(hisR*100);
@@ -720,9 +728,6 @@ function calc(){
   document.getElementById('hisBarPct').textContent = hasIncome ? hisPct+'%' : '—%';
   document.getElementById('herBarPct').textContent = hasIncome ? herPct+'%' : '—%';
   document.getElementById('hisBarSeg').style.width = (hasIncome ? hisPct : 50) + '%';
-
-  renderExps();
-  renderAids();
 
   // ── 全費目の合計
   let grand = 0;
@@ -884,7 +889,8 @@ function renderExps(){
           oninput="exps[${i}].name=this.value;save()">
         <div class="exp-amt-w">
           <input type="number" min="0" step="1" value="${e.amount||''}" placeholder="0"
-            oninput="exps[${i}].amount=parseInt(this.value)||0;calc();save()">
+            oninput="exps[${i}].amount=parseInt(this.value)||0;save()"
+            onchange="calc()">
           <span>円</span>
         </div>
         <button class="del-btn" onclick="delExp(${i})">✕</button>
@@ -902,16 +908,16 @@ function renderExps(){
   });
 }
 
-function setPaidBy(i, who){ exps[i].paidBy=who; calc(); save(); }
+function setPaidBy(i, who){ exps[i].paidBy=who; fullRefresh(); save(); }
 function addExp(){
   exps.push({name:'新しい費目',amount:0,paidBy:'common'});
-  calc(); save();
+  fullRefresh(); save();
   setTimeout(()=>{
     const inputs=document.querySelectorAll('.exp-name');
     if(inputs.length) inputs[inputs.length-1].focus();
   },50);
 }
-function delExp(i){ exps.splice(i,1); calc(); save(); }
+function delExp(i){ exps.splice(i,1); fullRefresh(); save(); }
 
 // ─── SAVE RECORD ─────────────────────────────────────────
 function saveRecord(){
@@ -1132,7 +1138,7 @@ if('serviceWorker' in navigator){
 
 // ─── INIT ─────────────────────────────────────────────────
 load();
-calc();
+fullRefresh();
 </script>
 </body>
 </html>
