@@ -27,6 +27,7 @@
   --her-light:#f4dde7;
   --accent:#c97c2a;
   --success:#2a8a5f;
+  --aid:#6a3f8a;
   --radius:14px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -170,28 +171,74 @@ body{
 .ratio-bar .hs{background:var(--his);height:100%;transition:width 0.4s cubic-bezier(0.4,0,0.2,1);}
 .ratio-bar .rs{background:var(--her);height:100%;flex:1;}
 
+/* ── AID CARD ── */
+.aid-section{
+  padding:0.8rem 1rem;
+  display:flex;flex-direction:column;gap:0.5rem;
+}
+.aid-row{
+  display:flex;align-items:center;gap:0.5rem;
+}
+.aid-name{
+  background:none;border:none;outline:none;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:0.82rem;color:var(--ink);
+  border-bottom:1px dashed transparent;
+  transition:border-color 0.2s;padding:0.1rem 0;
+  flex:1;min-width:0;
+}
+.aid-name:focus{border-color:var(--aid);}
+.aid-amt-w{
+  display:flex;align-items:center;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;
+}
+.aid-amt-w input{
+  background:none;border:none;outline:none;
+  font-family:'DM Mono',monospace;
+  font-size:0.82rem;color:var(--ink);
+  padding:0.35rem 0.4rem;width:82px;text-align:right;
+}
+.aid-amt-w span{padding-right:0.4rem;color:var(--muted);font-size:0.68rem;white-space:nowrap;}
+.aid-del{
+  background:none;border:none;color:var(--border);
+  cursor:pointer;font-size:0.85rem;padding:0 0.2rem;
+  transition:color 0.15s;line-height:1;
+}
+.aid-del:hover{color:#c0392b;}
+.add-aid-btn{
+  background:none;
+  border:1px dashed var(--border);
+  border-radius:8px;
+  color:var(--muted);
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:0.75rem;padding:0.45rem;
+  cursor:pointer;transition:all 0.2s;
+}
+.add-aid-btn:hover{border-color:var(--aid);color:var(--aid);}
+.aid-total{
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;color:var(--aid);
+  text-align:right;padding:0.2rem 0;
+}
+
 /* ── EXPENSES ── */
 .exp-list{padding:0.5rem 0.8rem;}
 .exp-item{
-  display:flex;
-  flex-direction:column;
-  gap:0.35rem;
-  padding:0.65rem 0;
+  display:flex;flex-direction:column;gap:0.3rem;
+  padding:0.6rem 0;
   border-bottom:1px solid var(--border);
 }
 .exp-item:last-child{border-bottom:none;}
 
 .exp-row-top{
   display:grid;
-  grid-template-columns:1fr auto auto auto;
+  grid-template-columns:1fr auto auto;
   align-items:center;gap:0.5rem;
 }
 
 .exp-row-bottom{
-  display:flex;
-  align-items:center;
-  gap:0.4rem;
-  padding-left:0.1rem;
+  display:flex;align-items:center;gap:0.4rem;
 }
 
 .exp-name{
@@ -212,22 +259,9 @@ body{
   background:none;border:none;outline:none;
   font-family:'DM Mono',monospace;
   font-size:0.82rem;color:var(--ink);
-  padding:0.35rem 0.4rem;width:72px;text-align:right;
+  padding:0.35rem 0.4rem;width:82px;text-align:right;
 }
 .exp-amt-w span{padding-right:0.4rem;color:var(--muted);font-size:0.68rem;white-space:nowrap;}
-
-.split-tog{
-  display:flex;border:1px solid var(--border);
-  border-radius:6px;overflow:hidden;
-}
-.split-tog button{
-  border:none;background:none;
-  font-size:0.65rem;padding:0.3rem 0.4rem;
-  cursor:pointer;color:var(--muted);
-  transition:all 0.15s;white-space:nowrap;
-}
-.split-tog button.r{background:var(--accent);color:#fff;}
-.split-tog button.h{background:var(--success);color:#fff;}
 
 .del-btn{
   background:none;border:none;color:var(--border);
@@ -237,25 +271,22 @@ body{
 .del-btn:hover{color:#c0392b;}
 
 /* payment source toggle */
+.pay-src-label{
+  font-size:0.62rem;color:var(--muted);white-space:nowrap;
+}
 .pay-src-tog{
   display:flex;border:1px solid var(--border);
   border-radius:6px;overflow:hidden;
 }
 .pay-src-tog button{
   border:none;background:none;
-  font-size:0.6rem;padding:0.22rem 0.45rem;
+  font-size:0.62rem;padding:0.22rem 0.5rem;
   cursor:pointer;color:var(--muted);
   transition:all 0.15s;white-space:nowrap;
 }
 .pay-src-tog button.common-active{background:var(--muted);color:#fff;}
 .pay-src-tog button.his-active{background:var(--his);color:#fff;}
 .pay-src-tog button.her-active{background:var(--her);color:#fff;}
-
-.pay-src-label{
-  font-size:0.6rem;
-  color:var(--muted);
-  white-space:nowrap;
-}
 
 .add-exp-btn{
   width:100%;background:none;
@@ -268,61 +299,54 @@ body{
 }
 .add-exp-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-/* ── OPTIONS ROW ── */
-.options-row{
-  padding:0.6rem 1.1rem;
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.options-label{
-  font-size:0.72rem;
-  color:var(--muted);
-}
-.round-tog{
-  display:flex;border:1px solid var(--border);
-  border-radius:6px;overflow:hidden;
-}
-.round-tog button{
-  border:none;background:none;
-  font-size:0.65rem;padding:0.3rem 0.6rem;
-  cursor:pointer;color:var(--muted);
-  transition:all 0.15s;white-space:nowrap;
-}
-.round-tog button.active{background:var(--accent);color:#fff;}
-
-/* result summary */
+/* ── RESULT ── */
 .result-grid{display:grid;grid-template-columns:1fr 1fr;}
 .result-person{padding:1rem 1.1rem;}
 .result-person:first-child{border-right:1px solid var(--border);}
 .res-name{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;}
 .his .res-name{color:var(--his);}
 .her .res-name{color:var(--her);}
-.res-amt{font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:500;color:var(--ink);margin-bottom:0.1rem;}
-.res-sub{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);}
-.res-advance{
-  font-family:'DM Mono',monospace;
-  font-size:0.68rem;
-  color:var(--accent);
-  margin-top:0.15rem;
-}
+.res-amt{font-family:'DM Mono',monospace;font-size:1.35rem;font-weight:500;color:var(--ink);margin-bottom:0.1rem;}
+.res-sub{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);}
+.res-detail{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);margin-top:0.3rem;line-height:1.6;}
 
 .total-row{
-  padding:0.8rem 1.1rem;
+  padding:0.7rem 1.1rem;
   border-top:1px solid var(--border);
   display:flex;justify-content:space-between;align-items:center;
 }
-.total-label{font-size:0.8rem;color:var(--muted);}
-.total-val{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;}
+.total-label{font-size:0.78rem;color:var(--muted);}
+.total-val{font-family:'DM Mono',monospace;font-size:0.95rem;font-weight:500;}
+.total-sub{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--aid);}
 
-/* settlement row */
-.settle-row{
-  padding:0.8rem 1.1rem;
-  border-top:1.5px solid var(--accent);
-  background:rgba(201,124,42,0.06);
-  display:flex;justify-content:space-between;align-items:center;
+/* settlement box */
+.settle-box{
+  border-top:2px solid var(--accent);
+  background:rgba(201,124,42,0.05);
+  padding:1rem 1.1rem;
 }
-.settle-label{font-size:0.78rem;color:var(--accent);font-weight:500;}
-.settle-val{font-family:'DM Mono',monospace;font-size:0.95rem;font-weight:500;color:var(--accent);}
+.settle-title{
+  font-size:0.7rem;font-weight:500;color:var(--accent);
+  margin-bottom:0.6rem;letter-spacing:0.05em;
+}
+.settle-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0.35rem 0;
+  font-size:0.82rem;
+}
+.settle-arrow{
+  color:var(--accent);font-weight:500;
+}
+.settle-amount{
+  font-family:'DM Mono',monospace;
+  font-weight:600;font-size:0.95rem;
+  color:var(--accent);
+}
+.settle-none{
+  text-align:center;
+  color:var(--muted);font-size:0.8rem;
+  padding:0.2rem 0;
+}
 
 /* save btn */
 .save-btn{
@@ -386,9 +410,10 @@ body{
 }
 .month-detail-row:last-child{border:none;}
 .month-settle{
-  font-size:0.78rem;padding:0.4rem 0 0.2rem;
+  font-size:0.75rem;padding:0.5rem 0 0.2rem;
   color:var(--accent);font-weight:500;
-  text-align:center;
+  border-top:1px dashed var(--accent);
+  margin-top:0.3rem;
 }
 .month-del{
   background:none;border:none;color:var(--muted);
@@ -415,7 +440,6 @@ canvas{max-height:240px;}
 @media(max-width:420px){
   .income-grid{grid-template-columns:1fr;}
   .exp-row-top{grid-template-columns:1fr auto auto;}
-  .del-btn{display:none;}
 }
 </style>
 </head>
@@ -480,49 +504,58 @@ canvas{max-height:240px;}
     </div>
   </div>
 
+  <!-- Aid / Support -->
+  <div class="card">
+    <div class="card-header">
+      <span>🎁 援助・補助</span>
+      <span style="font-size:0.58rem;color:var(--aid)">合計から差引</span>
+    </div>
+    <div class="aid-section" id="aidSection"></div>
+    <div style="padding:0 1rem 0.8rem">
+      <button class="add-aid-btn" onclick="addAid()">＋ 援助を追加</button>
+    </div>
+  </div>
+
   <!-- Expenses -->
   <div class="card">
     <div class="card-header">
       <span>費目リスト</span>
-      <span style="font-size:0.6rem;color:var(--accent)">年収比 / 折半</span>
+      <span style="font-size:0.58rem;color:var(--muted)">金額は円単位</span>
     </div>
     <div class="exp-list" id="expList"></div>
     <div style="padding:0 0.8rem 0.8rem">
       <button class="add-exp-btn" onclick="addExp()">＋ 費目を追加</button>
     </div>
-    <div class="options-row">
-      <span class="options-label">端数処理</span>
-      <div class="round-tog">
-        <button id="roundOff" onclick="setRounding('off')">そのまま</button>
-        <button id="roundOn" class="active" onclick="setRounding('on')">100円単位</button>
-      </div>
-    </div>
   </div>
 
   <!-- Result -->
-  <div class="card">
+  <div class="card" id="resultCard">
     <div class="card-header">月額 負担まとめ</div>
     <div class="result-grid">
       <div class="result-person his">
         <div class="res-name" id="resHisName">自分</div>
-        <div class="res-amt" id="resHisAmt">0万</div>
+        <div class="res-amt" id="resHisAmt">¥0</div>
         <div class="res-sub" id="resHisSub">—</div>
-        <div class="res-advance" id="resHisAdv"></div>
+        <div class="res-detail" id="resHisDetail"></div>
       </div>
       <div class="result-person her">
         <div class="res-name" id="resHerName">妻</div>
-        <div class="res-amt" id="resHerAmt">0万</div>
+        <div class="res-amt" id="resHerAmt">¥0</div>
         <div class="res-sub" id="resHerSub">—</div>
-        <div class="res-advance" id="resHerAdv"></div>
+        <div class="res-detail" id="resHerDetail"></div>
       </div>
     </div>
     <div class="total-row">
-      <span class="total-label">合計生活費</span>
-      <span class="total-val" id="resTotalAmt">0 万円/月</span>
+      <span class="total-label">支出合計</span>
+      <span class="total-val" id="resTotalAmt">¥0</span>
     </div>
-    <div class="settle-row" id="settleRow" style="display:none;">
-      <span class="settle-label" id="settleLabel">精算不要</span>
-      <span class="settle-val" id="settleVal"></span>
+    <div class="total-row" id="aidTotalRow" style="display:none;border-top:none;padding-top:0;">
+      <span class="total-label">援助差引後</span>
+      <span class="total-val total-sub" id="resNetAmt">¥0</span>
+    </div>
+    <div class="settle-box" id="settleBox">
+      <div class="settle-title">💰 精算</div>
+      <div id="settleContent"></div>
     </div>
   </div>
 
@@ -563,15 +596,16 @@ canvas{max-height:240px;}
 <script>
 // ─── STATE ───────────────────────────────────────────────
 let periods = { his:'year', her:'year' };
-let rounding = 'on'; // 'on' = 100円単位丸め, 'off' = そのまま
 const DEFAULT_EXPS = [
-  {name:'家賃・住居費', amount:0, split:'ratio', paidBy:'common'},
-  {name:'食費・日用品', amount:0, split:'ratio', paidBy:'common'},
-  {name:'水道光熱費',   amount:0, split:'ratio', paidBy:'common'},
-  {name:'通信費',       amount:0, split:'half',  paidBy:'common'},
-  {name:'交際費・外食', amount:0, split:'ratio', paidBy:'common'},
+  {name:'家賃', amount:0, paidBy:'common'},
+  {name:'生活費（共通口座）', amount:0, paidBy:'common'},
+  {name:'食費（個人立替）', amount:0, paidBy:'common'},
+];
+const DEFAULT_AIDS = [
+  {name:'母からの援助', amount:50000},
 ];
 let exps = [];
+let aids = [];
 let records = [];
 let charts = {};
 
@@ -581,8 +615,7 @@ function save() {
     hisName: v('hisName'), herName: v('herName'),
     hisIncome: v('hisIncome'), herIncome: v('herIncome'),
     hisPeriod: periods.his, herPeriod: periods.her,
-    rounding,
-    exps
+    exps, aids
   }));
   localStorage.setItem('warikin_records', JSON.stringify(records));
 }
@@ -597,18 +630,16 @@ function load() {
     document.getElementById('herIncome').value = s.herIncome || '';
     periods.his = s.hisPeriod || 'year';
     periods.her = s.herPeriod || 'year';
-    rounding = s.rounding || 'on';
     ['his','her'].forEach(p => {
       document.getElementById(p+'Year').classList.toggle('active', periods[p]==='year');
       document.getElementById(p+'Month').classList.toggle('active', periods[p]==='month');
     });
-    document.getElementById('roundOn').classList.toggle('active', rounding==='on');
-    document.getElementById('roundOff').classList.toggle('active', rounding==='off');
     exps = s.exps || JSON.parse(JSON.stringify(DEFAULT_EXPS));
-    // migrate old data without paidBy
+    aids = s.aids || JSON.parse(JSON.stringify(DEFAULT_AIDS));
     exps.forEach(e => { if(!e.paidBy) e.paidBy = 'common'; });
   } else {
     exps = JSON.parse(JSON.stringify(DEFAULT_EXPS));
+    aids = JSON.parse(JSON.stringify(DEFAULT_AIDS));
   }
 }
 
@@ -626,20 +657,12 @@ function getRatios(){
   return total > 0 ? { hisR: hm/total, herR: herm/total, total } : { hisR:0.5, herR:0.5, total:0 };
 }
 
-function applyRounding(val){
-  // 万円 → 100円単位に丸める = 小数点以下3桁目で丸め (0.01万 = 100円)
-  if(rounding === 'on'){
-    return Math.round(val * 100) / 100;
-  }
-  return val;
-}
+function yen(n){ return '¥' + Math.round(n).toLocaleString(); }
 
-// ─── ROUNDING TOGGLE ──────────────────────────────────────
-function setRounding(mode){
-  rounding = mode;
-  document.getElementById('roundOn').classList.toggle('active', mode==='on');
-  document.getElementById('roundOff').classList.toggle('active', mode==='off');
-  calc(); save();
+function getTotalAid(){
+  let sum = 0;
+  aids.forEach(a => { sum += parseInt(a.amount) || 0; });
+  return sum;
 }
 
 // ─── PERIOD TOGGLE ────────────────────────────────────────
@@ -648,6 +671,43 @@ function setPeriod(p, mode){
   document.getElementById(p+'Year').classList.toggle('active', mode==='year');
   document.getElementById(p+'Month').classList.toggle('active', mode==='month');
   calc(); save();
+}
+
+// ─── AID RENDER ──────────────────────────────────────────
+function renderAids(){
+  const sec = document.getElementById('aidSection');
+  sec.innerHTML = '';
+  aids.forEach((a,i) => {
+    const row = document.createElement('div');
+    row.className = 'aid-row';
+    row.innerHTML = `
+      <input class="aid-name" type="text" value="${a.name}" placeholder="援助元"
+        oninput="aids[${i}].name=this.value;save()">
+      <div class="aid-amt-w">
+        <input type="number" min="0" step="1" value="${a.amount||''}" placeholder="0"
+          oninput="aids[${i}].amount=parseInt(this.value)||0;calc();save()">
+        <span>円</span>
+      </div>
+      <button class="aid-del" onclick="delAid(${i})">✕</button>
+    `;
+    sec.appendChild(row);
+  });
+  // total display
+  const tot = getTotalAid();
+  if(tot > 0){
+    const t = document.createElement('div');
+    t.className = 'aid-total';
+    t.textContent = '援助合計: ' + yen(tot);
+    sec.appendChild(t);
+  }
+}
+function addAid(){
+  aids.push({name:'新しい援助', amount:0});
+  renderAids(); save();
+}
+function delAid(i){
+  aids.splice(i,1);
+  renderAids(); calc(); save();
 }
 
 // ─── CALC ─────────────────────────────────────────────────
@@ -661,80 +721,160 @@ function calc(){
   document.getElementById('herBarPct').textContent = hasIncome ? herPct+'%' : '—%';
   document.getElementById('hisBarSeg').style.width = (hasIncome ? hisPct : 50) + '%';
 
-  renderExps(hisR, herR);
+  renderExps();
+  renderAids();
 
-  let hisTot=0, herTot=0, grand=0;
-  let hisAdvanced=0, herAdvanced=0; // 立替額
+  // ── 全費目の合計
+  let grand = 0;
+  let paidByCommon = 0;
+  let paidByHis = 0;
+  let paidByHer = 0;
 
   exps.forEach(e => {
-    const a = parseFloat(e.amount)||0;
+    const a = parseInt(e.amount) || 0;
     grand += a;
-
-    // 負担額の計算
-    let hisBurden, herBurden;
-    if(e.split==='half'){
-      hisBurden = a/2;
-      herBurden = a/2;
-    } else {
-      hisBurden = a*hisR;
-      herBurden = a*herR;
-    }
-
-    hisTot += hisBurden;
-    herTot += herBurden;
-
-    // 立替の追跡
-    if(e.paidBy === 'his'){
-      // 自分が全額立替 → 相手の負担分を自分が立て替えた
-      hisAdvanced += herBurden;
-    } else if(e.paidBy === 'her'){
-      // 相手が全額立替 → 自分の負担分を相手が立て替えた
-      herAdvanced += hisBurden;
-    }
+    if(e.paidBy === 'common') paidByCommon += a;
+    else if(e.paidBy === 'his') paidByHis += a;
+    else if(e.paidBy === 'her') paidByHer += a;
   });
 
-  // 端数処理
-  hisTot = applyRounding(hisTot);
-  herTot = applyRounding(herTot);
-  hisAdvanced = applyRounding(hisAdvanced);
-  herAdvanced = applyRounding(herAdvanced);
+  // ── 援助を差し引き
+  const aidTotal = getTotalAid();
+  const netTotal = Math.max(0, grand - aidTotal);  // 二人で負担する額
+
+  // ── 年収比で負担額を算出（援助差引後）
+  const hisBurden = Math.round(netTotal * hisR);
+  const herBurden = netTotal - hisBurden;
 
   const n = getNames();
   document.getElementById('resHisName').textContent = n.his;
   document.getElementById('resHerName').textContent = n.her;
-  document.getElementById('resHisAmt').textContent = hisTot.toFixed(2)+'万';
-  document.getElementById('resHerAmt').textContent = herTot.toFixed(2)+'万';
-  document.getElementById('resHisSub').textContent = grand>0 ? `実質 ${(hisTot/grand*100).toFixed(1)}%` : '—';
-  document.getElementById('resHerSub').textContent = grand>0 ? `実質 ${(herTot/grand*100).toFixed(1)}%` : '—';
-  document.getElementById('resTotalAmt').textContent = grand.toFixed(2)+' 万円/月';
+  document.getElementById('resHisAmt').textContent = yen(hisBurden);
+  document.getElementById('resHerAmt').textContent = yen(herBurden);
+  document.getElementById('resHisSub').textContent = netTotal>0 ? `負担率 ${(hisBurden/netTotal*100).toFixed(1)}%` : '—';
+  document.getElementById('resHerSub').textContent = netTotal>0 ? `負担率 ${(herBurden/netTotal*100).toFixed(1)}%` : '—';
 
-  // 立替表示
-  document.getElementById('resHisAdv').textContent = hisAdvanced > 0 ? `立替: ${hisAdvanced.toFixed(2)}万` : '';
-  document.getElementById('resHerAdv').textContent = herAdvanced > 0 ? `立替: ${herAdvanced.toFixed(2)}万` : '';
+  // 内訳詳細
+  let hisDetailHtml = '';
+  let herDetailHtml = '';
+  if(paidByHis > 0) hisDetailHtml += `個人支払: ${yen(paidByHis)}<br>`;
+  if(paidByHer > 0) herDetailHtml += `個人支払: ${yen(paidByHer)}<br>`;
 
-  // 精算表示
-  const settleRow = document.getElementById('settleRow');
-  const netSettle = hisAdvanced - herAdvanced; // 正なら相手→自分へ支払い
-  if(netSettle > 0.001){
-    settleRow.style.display = 'flex';
-    document.getElementById('settleLabel').textContent = `${n.her} → ${n.his}`;
-    document.getElementById('settleVal').textContent = `${applyRounding(Math.abs(netSettle)).toFixed(2)} 万円`;
-  } else if(netSettle < -0.001){
-    settleRow.style.display = 'flex';
-    document.getElementById('settleLabel').textContent = `${n.his} → ${n.her}`;
-    document.getElementById('settleVal').textContent = `${applyRounding(Math.abs(netSettle)).toFixed(2)} 万円`;
+  const hisShareOfCommon = hisBurden - paidByHis;
+  const herShareOfCommon = herBurden - paidByHer;
+  if(grand > 0){
+    hisDetailHtml += `共通口座分: ${yen(Math.max(0, hisShareOfCommon))}`;
+    herDetailHtml += `共通口座分: ${yen(Math.max(0, herShareOfCommon))}`;
+  }
+  document.getElementById('resHisDetail').innerHTML = hisDetailHtml;
+  document.getElementById('resHerDetail').innerHTML = herDetailHtml;
+
+  document.getElementById('resTotalAmt').textContent = yen(grand);
+
+  // 援助表示
+  const aidRow = document.getElementById('aidTotalRow');
+  if(aidTotal > 0){
+    aidRow.style.display = 'flex';
+    document.getElementById('resNetAmt').textContent = yen(netTotal) + '（援助 -' + yen(aidTotal) + '）';
   } else {
-    settleRow.style.display = 'none';
+    aidRow.style.display = 'none';
+  }
+
+  // ── 精算計算
+  // 各費目について、自分が立替た中の相手負担分と、相手が立替た中の自分負担分を計算
+  // 注意: 負担比率は援助差引後の netTotal に対してではなく、
+  //        「各費目の金額 × 比率」ではなく、
+  //        全体の負担額ベースで考える。
+  //
+  // シンプルなアプローチ:
+  //   自分の負担すべき額 = hisBurden
+  //   自分が実際に支払った額 = paidByHis + (共通口座からの自分の拠出分)
+  //   共通口座の支出 = paidByCommon + aidTotal (援助は共通口座に入る)
+  //   共通口座の収入 = 自分の拠出 + 相手の拠出 + 援助
+  //   共通口座の支出 = paidByCommon
+  //   なので: 自分の共通口座拠出すべき額 = hisBurden - paidByHis
+  //   もし < 0 → 自分が払いすぎ → 共通口座から返してもらう
+  //
+  //   ただし共通口座には援助 aidTotal 円も入っているので
+  //   共通口座に二人が入れるべき額 = paidByCommon - aidTotal
+  //   自分が共通口座に入れるべき額 = (paidByCommon - aidTotal) のうち自分比率分
+  //   → いや、もっとシンプルに考える:
+  //
+  //   負担すべき額: hisBurden (= netTotal × hisR)
+  //   個人で払った額: paidByHis
+  //   差額 = hisBurden - paidByHis
+  //     正 → 共通口座からその分負担している（追加支払い不要）
+  //     負 → 個人で負担すべき額以上に払っている → 共通口座から返金
+
+  const settleContent = document.getElementById('settleContent');
+
+  if(grand === 0){
+    settleContent.innerHTML = '<div class="settle-none">費目を入力してください</div>';
+    return;
+  }
+
+  let lines = [];
+
+  // 自分の過不足: hisBurden - paidByHis = 共通口座で負担すべき額
+  // 相手の過不足: herBurden - paidByHer = 共通口座で負担すべき額
+  // 共通口座の収支: paidByCommon(支出) vs (aidTotal + 二人の拠出)(収入)
+  //
+  // 精算の考え方:
+  // 自分が個人で hisBurden より多く払った場合 → 共通口座(or相手)から返してもらう
+  // 自分が個人で hisBurden より少なく払った場合 → 残りは共通口座から出ている（OK）
+
+  if(hisShareOfCommon < 0){
+    // 自分が個人で負担額以上に払っている → 共通口座から返金
+    lines.push({
+      label: `共通口座 → ${n.his}`,
+      amount: Math.abs(hisShareOfCommon),
+      note: '個人支払の超過分'
+    });
+  }
+  if(herShareOfCommon < 0){
+    lines.push({
+      label: `共通口座 → ${n.her}`,
+      amount: Math.abs(herShareOfCommon),
+      note: '個人支払の超過分'
+    });
+  }
+
+  // 共通口座の実際の支出と、二人が共通口座に入れるべき額の関係
+  const hisToCommon = Math.max(0, hisShareOfCommon);
+  const herToCommon = Math.max(0, herShareOfCommon);
+  const neededInCommon = paidByCommon; // 共通口座から出た額
+  const fundedByAid = aidTotal;       // 援助で賄われる分
+  const neededFromCouple = neededInCommon - fundedByAid; // 二人で入れるべき額
+
+  // 二人が共通口座に入れるべき額
+  if(neededFromCouple > 0){
+    const hisContrib = Math.round(neededFromCouple * hisR);
+    const herContrib = neededFromCouple - hisContrib;
+
+    // もし hisToCommon や herToCommon と一致しない場合は調整が必要だが、
+    // 基本的に一致するはず（援助が共通口座に入る前提）
+  }
+
+  if(lines.length === 0 && paidByHis === 0 && paidByHer === 0){
+    settleContent.innerHTML = '<div class="settle-none">全て共通口座から支払済み</div>';
+  } else if(lines.length === 0){
+    settleContent.innerHTML = '<div class="settle-none">精算不要</div>';
+  } else {
+    settleContent.innerHTML = lines.map(l =>
+      `<div class="settle-item">
+        <span class="settle-arrow">${l.label}</span>
+        <span class="settle-amount">${yen(l.amount)}</span>
+      </div>`
+    ).join('');
   }
 }
 
 // ─── RENDER EXPS ─────────────────────────────────────────
-function renderExps(hisR, herR){
+function renderExps(){
   const list = document.getElementById('expList');
   const n = getNames();
   list.innerHTML = '';
   exps.forEach((e,i) => {
-    const a = parseFloat(e.amount)||0;
     const paidBy = e.paidBy || 'common';
     const row = document.createElement('div');
     row.className = 'exp-item';
@@ -743,20 +883,16 @@ function renderExps(hisR, herR){
         <input class="exp-name" type="text" value="${e.name}" placeholder="費目名"
           oninput="exps[${i}].name=this.value;save()">
         <div class="exp-amt-w">
-          <input type="number" min="0" step="0.1" value="${e.amount||''}" placeholder="0"
-            oninput="exps[${i}].amount=parseFloat(this.value)||0;calc();save()">
-          <span>万/月</span>
-        </div>
-        <div class="split-tog">
-          <button class="${e.split==='ratio'?'r':''}" onclick="setSplit(${i},'ratio')">比</button>
-          <button class="${e.split==='half'?'h':''}" onclick="setSplit(${i},'half')">半</button>
+          <input type="number" min="0" step="1" value="${e.amount||''}" placeholder="0"
+            oninput="exps[${i}].amount=parseInt(this.value)||0;calc();save()">
+          <span>円</span>
         </div>
         <button class="del-btn" onclick="delExp(${i})">✕</button>
       </div>
       <div class="exp-row-bottom">
         <span class="pay-src-label">支払元:</span>
         <div class="pay-src-tog">
-          <button class="${paidBy==='common'?'common-active':''}" onclick="setPaidBy(${i},'common')">共通</button>
+          <button class="${paidBy==='common'?'common-active':''}" onclick="setPaidBy(${i},'common')">共通口座</button>
           <button class="${paidBy==='his'?'his-active':''}" onclick="setPaidBy(${i},'his')">${n.his}</button>
           <button class="${paidBy==='her'?'her-active':''}" onclick="setPaidBy(${i},'her')">${n.her}</button>
         </div>
@@ -766,10 +902,9 @@ function renderExps(hisR, herR){
   });
 }
 
-function setSplit(i, mode){ exps[i].split=mode; calc(); save(); }
 function setPaidBy(i, who){ exps[i].paidBy=who; calc(); save(); }
 function addExp(){
-  exps.push({name:'新しい費目',amount:0,split:'ratio',paidBy:'common'});
+  exps.push({name:'新しい費目',amount:0,paidBy:'common'});
   calc(); save();
   setTimeout(()=>{
     const inputs=document.querySelectorAll('.exp-name');
@@ -781,43 +916,29 @@ function delExp(i){ exps.splice(i,1); calc(); save(); }
 // ─── SAVE RECORD ─────────────────────────────────────────
 function saveRecord(){
   const {hisR, herR} = getRatios();
-  let hisTot=0, herTot=0, grand=0;
-  let hisAdvanced=0, herAdvanced=0;
-
-  exps.forEach(e=>{
-    const a=parseFloat(e.amount)||0;
-    grand+=a;
-    let hisBurden, herBurden;
-    if(e.split==='half'){hisBurden=a/2;herBurden=a/2;}
-    else{hisBurden=a*hisR;herBurden=a*herR;}
-    hisTot+=hisBurden;
-    herTot+=herBurden;
-    if(e.paidBy==='his') hisAdvanced+=herBurden;
-    if(e.paidBy==='her') herAdvanced+=hisBurden;
-  });
+  let grand = 0;
+  exps.forEach(e=>{ grand += parseInt(e.amount)||0; });
   if(grand===0){ toast('費目の金額を入力してください'); return; }
 
-  hisTot = applyRounding(hisTot);
-  herTot = applyRounding(herTot);
-  hisAdvanced = applyRounding(hisAdvanced);
-  herAdvanced = applyRounding(herAdvanced);
+  const aidTotal = getTotalAid();
+  const netTotal = Math.max(0, grand - aidTotal);
+  const hisBurden = Math.round(netTotal * hisR);
+  const herBurden = netTotal - hisBurden;
 
   const now = new Date();
   const label = `${now.getFullYear()}年${now.getMonth()+1}月`;
   const n = getNames();
-  const netSettle = hisAdvanced - herAdvanced;
   const rec = {
     label, date: now.toISOString(),
     hisName: n.his, herName: n.her,
-    hisAmt: parseFloat(hisTot.toFixed(2)),
-    herAmt: parseFloat(herTot.toFixed(2)),
-    total: parseFloat(grand.toFixed(2)),
+    hisAmt: hisBurden,
+    herAmt: herBurden,
+    total: grand,
+    aidTotal,
+    netTotal,
     hisR: parseFloat(hisR.toFixed(4)),
-    hisAdvanced: parseFloat(hisAdvanced.toFixed(2)),
-    herAdvanced: parseFloat(herAdvanced.toFixed(2)),
-    netSettle: parseFloat(applyRounding(Math.abs(netSettle)).toFixed(2)),
-    settleDir: netSettle > 0.001 ? 'her2his' : (netSettle < -0.001 ? 'his2her' : 'none'),
-    exps: exps.map(e=>({...e}))
+    exps: exps.map(e=>({...e})),
+    aids: aids.map(a=>({...a}))
   };
   records.unshift(rec);
   save();
@@ -845,12 +966,28 @@ function renderHistory(){
     const mc = document.createElement('div');
     mc.className = 'month-card';
     const hisPct = Math.round(r.hisR*100);
+    const isYen = r.total > 1000;
+    const fmtAmt = (v) => isYen ? yen(v) : v+'万円';
 
+    // settle info
     let settleHtml = '';
-    if(r.settleDir === 'her2his'){
-      settleHtml = `<div class="month-settle">精算: ${r.herName} → ${r.hisName} ${r.netSettle}万円</div>`;
-    } else if(r.settleDir === 'his2her'){
-      settleHtml = `<div class="month-settle">精算: ${r.hisName} → ${r.herName} ${r.netSettle}万円</div>`;
+    if(r.exps){
+      let paidByHis=0, paidByHer=0;
+      r.exps.forEach(e=>{
+        const a = parseInt(e.amount)||0;
+        if(e.paidBy==='his') paidByHis+=a;
+        if(e.paidBy==='her') paidByHer+=a;
+      });
+      const hisShare = r.hisAmt - paidByHis;
+      const herShare = r.herAmt - paidByHer;
+      if(hisShare < 0) settleHtml += `<div class="month-settle">共通口座 → ${r.hisName} ${fmtAmt(Math.abs(hisShare))}</div>`;
+      if(herShare < 0) settleHtml += `<div class="month-settle">共通口座 → ${r.herName} ${fmtAmt(Math.abs(herShare))}</div>`;
+    }
+
+    // aid info
+    let aidHtml = '';
+    if(r.aidTotal > 0){
+      aidHtml = `<div class="month-detail-row" style="color:var(--aid)"><span>援助合計</span><span style="font-family:'DM Mono',monospace">-${fmtAmt(r.aidTotal)}</span></div>`;
     }
 
     mc.innerHTML = `
@@ -858,21 +995,23 @@ function renderHistory(){
         <span class="month-label">${r.label}</span>
         <span style="display:flex;align-items:center;gap:0.7rem">
           <span style="font-size:0.7rem;color:var(--muted)">${r.hisName} ${hisPct}% / ${r.herName} ${100-hisPct}%</span>
-          <span class="month-total">${r.total}万円</span>
+          <span class="month-total">${fmtAmt(r.total)}</span>
           <button class="month-del" onclick="event.stopPropagation();delRecord(${i})">削除</button>
         </span>
       </div>
       <div class="month-detail">
-        <div class="month-detail-row"><span>${r.hisName}の負担</span><span style="color:var(--his);font-family:'DM Mono',monospace">${r.hisAmt}万円</span></div>
-        <div class="month-detail-row"><span>${r.herName}の負担</span><span style="color:var(--her);font-family:'DM Mono',monospace">${r.herAmt}万円</span></div>
-        ${r.exps.map(e=>{
-          const paidLabel = e.paidBy==='his' ? ` [${r.hisName}立替]` : (e.paidBy==='her' ? ` [${r.herName}立替]` : '');
+        <div class="month-detail-row"><span>${r.hisName}の負担</span><span style="color:var(--his);font-family:'DM Mono',monospace">${fmtAmt(r.hisAmt)}</span></div>
+        <div class="month-detail-row"><span>${r.herName}の負担</span><span style="color:var(--her);font-family:'DM Mono',monospace">${fmtAmt(r.herAmt)}</span></div>
+        ${(r.exps||[]).map(e=>{
+          const paidLabel = e.paidBy==='his' ? ` [${r.hisName}]` : (e.paidBy==='her' ? ` [${r.herName}]` : ' [共通]');
+          const amt = isYen ? yen(e.amount||0) : (e.amount||0)+'万';
           return `
           <div class="month-detail-row">
             <span>${e.name}${paidLabel}</span>
-            <span style="font-family:'DM Mono',monospace;color:var(--muted)">${e.amount||0}万 (${e.split==='half'?'折半':'年収比'})</span>
+            <span style="font-family:'DM Mono',monospace;color:var(--muted)">${amt}</span>
           </div>`;
         }).join('')}
+        ${aidHtml}
         ${settleHtml}
       </div>
     `;
@@ -917,7 +1056,7 @@ function renderCharts(){
     data:{
       labels,
       datasets:[{
-        label:'合計生活費（万円）',
+        label:'合計生活費',
         data:totals,
         backgroundColor:'rgba(44,95,138,0.25)',
         borderColor:'#2c5f8a',
@@ -928,7 +1067,10 @@ function renderCharts(){
     options:{
       responsive:true,maintainAspectRatio:true,
       plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}}
+      scales:{
+        y:{beginAtZero:true,ticks:{font:{size:10},callback:v=>v>=10000?(v/10000)+'万':v.toLocaleString()}},
+        x:{ticks:{font:{size:10}}}
+      }
     }
   });
 
@@ -947,15 +1089,15 @@ function renderCharts(){
       responsive:true,maintainAspectRatio:true,
       plugins:{legend:{labels:{font:{size:11}}}},
       scales:{
-        y:{beginAtZero:true,stacked:true,ticks:{font:{size:10}}},
+        y:{beginAtZero:true,stacked:true,ticks:{font:{size:10},callback:v=>v>=10000?(v/10000)+'万':v.toLocaleString()}},
         x:{stacked:true,ticks:{font:{size:10}}}
       }
     }
   });
 
   const latest = records[0];
-  const dLabels = latest.exps.filter(e=>parseFloat(e.amount)>0).map(e=>e.name);
-  const dData = latest.exps.filter(e=>parseFloat(e.amount)>0).map(e=>parseFloat(e.amount));
+  const dLabels = (latest.exps||[]).filter(e=>(parseInt(e.amount)||0)>0).map(e=>e.name);
+  const dData = (latest.exps||[]).filter(e=>(parseInt(e.amount)||0)>0).map(e=>parseInt(e.amount));
   const dColors = ['#2c5f8a','#8a3f5f','#c97c2a','#2a8a5f','#5f8a2c','#6a3f8a','#8a6a2c'];
 
   charts.doughnut = new Chart(document.getElementById('chartDoughnut').getContext('2d'),{
